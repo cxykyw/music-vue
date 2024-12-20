@@ -1,12 +1,6 @@
 <template>
   <main class="main-content">
-    <!-- 顶部栏 -->
-    <header class="top-bar">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="搜索音乐、艺人或专辑">
-      </div>
-    </header>
+    <TopBar />
 
     <!-- 媒体库导航 -->
     <nav class="library-nav">

@@ -56,7 +56,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import TopBar from '../components/TopBar.vue'
 
 const currentTab = ref('new')
 const tabs = ref([

@@ -1,0 +1,8 @@
+:root {
+  /* 已有的变量 */
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #909090;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --primary-color: #1db954;
+} 
