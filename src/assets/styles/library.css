@@ -1,0 +1,177 @@
+/* 媒体库标签页样式 */
+.library-tabs {
+    margin: 20px 0;
+    border-bottom: 1px solid var(--bg-lighter);
+}
+
+.library-tabs ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    padding: 0;
+    margin: 0;
+}
+
+.library-tabs li {
+    position: relative;
+    padding: 15px 0;
+}
+
+.library-tabs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.library-tabs li.active a {
+    color: var(--text-primary);
+}
+
+.library-tabs li.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+}
+
+/* 顶部操作栏样式 */
+.library-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.filter-dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    padding: 8px 15px;
+    background: var(--bg-lighter);
+    border: none;
+    border-radius: 20px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background: var(--bg-lighter);
+    border-radius: 8px;
+    padding: 5px 0;
+    min-width: 150px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 100;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 8px 15px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.dropdown-content a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    background: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* 媒体内容网格样式 */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.media-card {
+    background: var(--bg-lighter);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s, background 0.3s;
+    cursor: pointer;
+}
+
+.media-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.media-card.folder i {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.media-card.playlist img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.media-card h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.media-card p {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .library-tabs ul {
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .library-tabs li {
+        white-space: nowrap;
+    }
+
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+} 

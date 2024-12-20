@@ -1,0 +1,144 @@
+/* 升级页面主容器 */
+.upgrade-content {
+  min-height: 100vh;
+  width: 100%;
+  background: #030303;
+  display: flex;
+  justify-content: center;
+}
+
+.upgrade-container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 80px 40px;
+}
+
+/* 升级信息区域 */
+.upgrade-info {
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.upgrade-info h1 {
+  font-size: 48px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: #fff;
+  font-weight: 700;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upgrade-info p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 32px;
+}
+
+/* 按钮和链接样式 */
+.trial-btn {
+  background: #3ea6ff;
+  color: #0f0f0f;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 16px 36px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 24px;
+}
+
+.trial-btn:hover {
+  background: #65b8ff;
+  transform: scale(1.02);
+}
+
+.other-plans {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.plan-link {
+  color: #3ea6ff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.plan-link:hover {
+  color: #65b8ff;
+}
+
+/* 会员权益区域 */
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 80px;
+}
+
+.benefit-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  transition: background-color 0.2s;
+}
+
+.benefit-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.benefit-item i {
+  font-size: 24px;
+  color: #3ea6ff;
+}
+
+.benefit-text h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.benefit-text p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 底部文字 */
+.bottom-content {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+  .upgrade-info h1 {
+    font-size: 36px;
+  }
+
+  .benefits {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .upgrade-container {
+    padding: 40px 20px;
+  }
+
+  .upgrade-info h1 {
+    font-size: 28px;
+  }
+
+  .benefit-item {
+    padding: 24px;
+  }
+} 
