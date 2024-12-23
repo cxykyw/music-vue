@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <TopBar />
     <!-- 欢迎横幅 -->
     <section class="welcome-banner">
       <div class="banner-content">

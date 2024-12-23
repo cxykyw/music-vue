@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import { getSongUrl, getSongDetail, getLyric } from '../api/music'
+import { getSongDetail } from '../api/music'
 
 export const usePlayerStore = defineStore('player', () => {
   // 播放状态
@@ -21,16 +21,23 @@ export const usePlayerStore = defineStore('player', () => {
   // 音频实例
   let audio = null
   
-  // 添加状态
+  // 状态
   const lyric = ref('')
   const currentLyric = ref('')
-  const loading = ref(false)
+  const isLoading = ref(false)
   
   // 初始化音频实例
   const initAudio = () => {
     if (audio) return
     
+    // 创建音频元素
     audio = new Audio()
+    audio.id = 'music-player'
+    
+    // 添加到 body 中
+    if (typeof document !== 'undefined') {
+      document.body.appendChild(audio)
+    }
     
     // 监听事件
     audio.addEventListener('timeupdate', () => {
@@ -43,6 +50,14 @@ export const usePlayerStore = defineStore('player', () => {
     
     audio.addEventListener('ended', () => {
       playNext()
+    })
+    
+    audio.addEventListener('error', (e) => {
+      console.error('Audio error:', e)
+    })
+    
+    audio.addEventListener('canplay', () => {
+      console.log('Audio can play')
     })
     
     // 音量变化监听
@@ -59,17 +74,24 @@ export const usePlayerStore = defineStore('player', () => {
   
   // 播放控制方法
   const play = async (track, index) => {
-    if (!audio) initAudio()
-    
-    if (track) {
-      // 播放新歌曲
-      currentIndex.value = index
-      audio.src = track.url
-      await audio.load()
+    try {
+      if (!audio) initAudio()
+      
+      if (track) {
+        // 播放新歌曲
+        currentIndex.value = index
+        audio.src = track.url
+        console.log('Loading audio source:', track.url)
+        await audio.load()
+      }
+      
+      console.log('Starting playback...')
+      await audio.play()
+      isPlaying.value = true
+    } catch (error) {
+      console.error('Play error:', error)
+      throw error
     }
-    
-    await audio.play()
-    isPlaying.value = true
   }
   
   const pause = () => {
@@ -157,40 +179,6 @@ export const usePlayerStore = defineStore('player', () => {
     track.isLiked = !track.isLiked
   }
   
-  // 添加方法
-  const loadSong = async (songId) => {
-    try {
-      loading.value = true
-      
-      // 并行请求歌曲信息
-      const [urlRes, detailRes, lyricRes] = await Promise.all([
-        getSongUrl(songId),
-        getSongDetail(songId),
-        getLyric(songId)
-      ])
-      
-      // 更新歌曲信息
-      const song = {
-        id: songId,
-        url: urlRes.url,
-        title: detailRes.name,
-        artist: detailRes.ar.map(a => a.name).join('/'),
-        cover: detailRes.al.picUrl,
-        duration: detailRes.dt / 1000
-      }
-      
-      // 更新歌词
-      lyric.value = lyricRes.lrc.lyric
-      parseLyric(lyric.value)
-      
-      return song
-    } catch (error) {
-      throw error
-    } finally {
-      loading.value = false
-    }
-  }
-  
   // 解析歌词
   const parseLyric = (lrc) => {
     const lyrics = lrc.split('\n')
@@ -221,10 +209,42 @@ export const usePlayerStore = defineStore('player', () => {
   // 播放歌曲
   const playSong = async (songId) => {
     try {
-      const song = await loadSong(songId)
-      addToPlaylist([song], true)
+      isLoading.value = true
+      
+      // 获取歌曲详情
+      const res = await getSongDetail(songId)
+      if (res.code !== 200) {
+        throw new Error(res.message || '获取歌曲信息失败')
+      }
+
+      // 更新当前播放信息
+      const track = {
+        ...res.data,
+        // 使用完整的 URL 路径
+        url: res.data.url.startsWith('http') 
+          ? res.data.url 
+          : `${import.meta.env.VITE_API_BASE_URL}${res.data.url}`,
+        cover: res.data.cover.startsWith('http') 
+          ? res.data.cover 
+          : `${import.meta.env.VITE_API_BASE_URL}${res.data.cover}`
+      }
+
+      console.log('Playing track:', track) // 添加调试日志
+
+      // 添加到播放列表并播放
+      addToPlaylist([track], true)
+      
+      // 更新歌词
+      if (track.lyric) {
+        lyric.value = track.lyric
+        parseLyric(lyric.value)
+      }
+      
     } catch (error) {
+      console.error('播放歌曲失败:', error)
       throw error
+    } finally {
+      isLoading.value = false
     }
   }
   
@@ -240,7 +260,7 @@ export const usePlayerStore = defineStore('player', () => {
     playMode,
     lyric,
     currentLyric,
-    loading,
+    isLoading,
     
     // 方法
     play,

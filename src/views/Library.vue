@@ -1,42 +1,32 @@
 <template>
-  <main class="main-content">
-    <TopBar />
-
-    <!-- 媒体库导航 -->
-    <nav class="library-nav">
+  <div class="library">
+    <!-- 导航标签 -->
+    <div class="library-nav">
       <ul>
-        <li class="active"><a href="#playlists">播放列表</a></li>
-        <li><a href="#albums">专辑</a></li>
-        <li><a href="#songs">歌曲</a></li>
-        <li><a href="#artists">音乐人</a></li>
-        <li><a href="#podcasts">播客</a></li>
+        <li>
+          <router-link to="/library/songs" active-class="active">歌曲</router-link>
+        </li>
+        <li>
+          <router-link to="/library/playlists" active-class="active">歌单</router-link>
+        </li>
+        <li>
+          <router-link to="/library/albums" active-class="active">专辑</router-link>
+        </li>
+        <li>
+          <router-link to="/library/favorites" active-class="active">收藏</router-link>
+        </li>
       </ul>
-    </nav>
+    </div>
 
-    <!-- 媒体内容网格 -->
-    <section class="media-grid">
-      <div class="media-card folder">
-        <i class="fas fa-bookmark"></i>
-        <h3>稍后听</h3>
-        <p>20 首歌曲</p>
-      </div>
-      <div class="media-card folder">
-        <i class="fas fa-heart"></i>
-        <h3>我喜欢的音乐</h3>
-        <p>128 首歌曲</p>
-      </div>
-      <div class="media-card folder">
-        <i class="fas fa-clock"></i>
-        <h3>最近播放</h3>
-        <p>50 首歌曲</p>
-      </div>
-      <div class="media-card folder">
-        <i class="fas fa-star"></i>
-        <h3>个人精选集</h3>
-        <p>35 首歌曲</p>
-      </div>
-    </section>
-  </main>
+    <!-- 内容区域 -->
+    <div class="library-content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </div>
+  </div>
 </template>
 
 <script setup>

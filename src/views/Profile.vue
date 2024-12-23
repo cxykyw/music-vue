@@ -8,7 +8,7 @@
     </header>
 
     <div class="profile-content">
-      <!-- 头像设置 -->
+      <!-- 头像部分 -->
       <div class="avatar-section">
         <div class="avatar-wrapper">
           <img :src="userInfo.avatar || defaultAvatar" alt="用户头像">
@@ -26,7 +26,7 @@
         >
       </div>
 
-      <!-- 基本信息 -->
+      <!-- 基本信息表单 -->
       <div class="info-section">
         <div class="form-group">
           <label>用户名</label>
@@ -55,22 +55,18 @@
               placeholder="设置邮箱"
               :disabled="!canChangeEmail"
             >
-            <button 
-              v-if="!userInfo.emailVerified"
-              class="verify-btn"
-              @click="handleVerifyEmail"
-            >
-              验证邮箱
-            </button>
+            <span class="email-status" :class="{ verified: userInfo.emailVerified }">
+              {{ userInfo.emailVerified ? '已验证' : '未验证' }}
+            </span>
           </div>
         </div>
 
         <div class="form-group">
           <label>个人简介</label>
-          <textarea
+          <textarea 
             v-model="userInfo.bio"
             placeholder="介绍一下自己..."
-            rows="3"
+            rows="4"
           ></textarea>
         </div>
       </div>
@@ -78,28 +74,39 @@
       <!-- 账号安全 -->
       <div class="security-section">
         <h3>账号安全</h3>
-        <div class="security-item" @click="showChangePassword = true">
-          <div class="security-info">
-            <i class="fas fa-lock"></i>
-            <span>修改密码</span>
+        <div class="security-options">
+          <div class="security-item" @click="showChangePassword = true">
+            <div class="item-info">
+              <i class="fas fa-lock"></i>
+              <div class="item-text">
+                <h4>修改密码</h4>
+                <p>定期更换密码可以保护账号安全</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
           </div>
-          <i class="fas fa-chevron-right"></i>
-        </div>
-        
-        <div class="security-item" @click="showDevices = true">
-          <div class="security-info">
-            <i class="fas fa-mobile-alt"></i>
-            <span>登录设备管理</span>
+
+          <div class="security-item" @click="showDevices = true">
+            <div class="item-info">
+              <i class="fas fa-mobile-alt"></i>
+              <div class="item-text">
+                <h4>登录设备</h4>
+                <p>查看并管理已登录的设备</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
           </div>
-          <i class="fas fa-chevron-right"></i>
-        </div>
-        
-        <div class="security-item danger" @click="showDeleteAccount = true">
-          <div class="security-info">
-            <i class="fas fa-trash-alt"></i>
-            <span>注销账号</span>
+
+          <div class="security-item danger" @click="showDeleteAccount = true">
+            <div class="item-info">
+              <i class="fas fa-trash-alt"></i>
+              <div class="item-text">
+                <h4>注销账号</h4>
+                <p>永久删除您的账号和所有数据</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
           </div>
-          <i class="fas fa-chevron-right"></i>
         </div>
       </div>
     </div>
@@ -246,7 +253,6 @@ import { ref, reactive, onMounted } from 'vue'
 import { useMessage } from '../hooks/useMessage'
 import { useUserStore } from '../stores/user'
 import { updateUserInfo, changePassword, uploadAvatar, getDevices, logoutDevice, deleteAccount } from '../api/user'
-import defaultAvatar from '../assets/images/default-avatar.png'
 
 const userStore = useUserStore()
 const { showMessage } = useMessage()
@@ -275,6 +281,9 @@ const passwordForm = reactive({
   newPassword: '',
   confirmPassword: ''
 })
+
+// 使用更大尺寸的头像，因为个人资料页面显示的头像较大
+const defaultAvatar = 'https://placehold.co/200x200/1a1a1a/ffffff?text=Avatar'
 
 onMounted(async () => {
   // 获取用户信息
@@ -391,37 +400,60 @@ const handleDeleteAccount = async () => {
 
 <style scoped>
 .profile-container {
-  padding: 30px;
   max-width: 800px;
   margin: 0 auto;
+  padding: 40px 20px;
 }
 
 .profile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.profile-header h2 {
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .save-btn {
+  padding: 10px 24px;
   background: var(--primary-color);
-  color: white;
+  color: #000;
   border: none;
-  padding: 8px 20px;
   border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
+.save-btn:hover {
+  transform: scale(1.05);
+}
+
+.save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.profile-content {
+  display: grid;
+  gap: 40px;
+}
+
+/* 头像部分 */
 .avatar-section {
-  text-align: center;
-  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .avatar-wrapper {
   position: relative;
   width: 120px;
   height: 120px;
-  margin: 0 auto;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -434,70 +466,147 @@ const handleDeleteAccount = async () => {
 
 .avatar-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
   opacity: 0;
-  transition: opacity 0.3s;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .avatar-overlay:hover {
   opacity: 1;
 }
 
+.avatar-overlay i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+/* 表单部分 */
 .info-section {
-  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
   color: var(--text-secondary);
+  font-size: 14px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
 }
 
 .email-group {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
-.verify-btn {
-  white-space: nowrap;
-  padding: 0 15px;
-  background: transparent;
-  border: 1px solid var(--primary-color);
+.email-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.email-status.verified {
+  background: rgba(29, 185, 84, 0.2);
   color: var(--primary-color);
-  border-radius: 4px;
-  cursor: pointer;
 }
 
+/* 安全设置部分 */
 .security-section {
-  border-top: 1px solid var(--border-color);
-  padding-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.security-section h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.security-options {
+  display: grid;
+  gap: 16px;
 }
 
 .security-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.security-info {
+.security-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.security-item.danger {
+  color: #ff4d4f;
+}
+
+.item-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+}
+
+.item-info i {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.item-text h4 {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.item-text p {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.security-item i.fa-chevron-right {
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .modal {

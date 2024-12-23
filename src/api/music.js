@@ -3,23 +3,7 @@ import request from '../utils/request'
 // 获取歌曲详情
 export function getSongDetail(id) {
   return request({
-    url: `/song/detail/${id}`,
-    method: 'get'
-  })
-}
-
-// 获取歌曲URL
-export function getSongUrl(id) {
-  return request({
-    url: `/song/url/${id}`,
-    method: 'get'
-  })
-}
-
-// 获取歌词
-export function getLyric(id) {
-  return request({
-    url: `/lyric/${id}`,
+    url: `/api/songs/${id}`,
     method: 'get'
   })
 }
@@ -68,5 +52,14 @@ export function getSearchSuggestions(keywords) {
     url: '/search/suggest',
     method: 'get',
     params: { keywords }
+  })
+}
+
+// 获取歌曲列表
+export function getSongs(params) {
+  return request({
+    url: '/api/songs',
+    method: 'get',
+    params
   })
 } 

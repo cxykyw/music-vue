@@ -1,57 +1,42 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { login as loginApi } from '../api/user'
-import { setToken, removeToken } from '../utils/auth'
-import { updateUserInfo, resendVerificationEmail } from '../api/user'
+import { login as loginApi } from '../api/auth'
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref('')
-  const userInfo = ref(null)
-  const isLoggedIn = ref(false)
+  const token = ref(localStorage.getItem('token') || '')
+  const userInfo = ref(JSON.parse(localStorage.getItem('userInfo') || 'null'))
+  const isLoggedIn = ref(!!token.value)
 
-  // 登录
-  async function login(loginForm) {
+  const login = async (credentials) => {
     try {
-      const res = await loginApi(loginForm)
-      token.value = res.token
-      userInfo.value = res.userInfo
+      const response = await loginApi(credentials)
+      const { token: newToken, user } = response.data
+      
+      // 保存token和用户信息
+      token.value = newToken
+      userInfo.value = user
       isLoggedIn.value = true
-      setToken(res.token)
-      return res
+      
+      // 持久化存储
+      localStorage.setItem('token', newToken)
+      localStorage.setItem('userInfo', JSON.stringify(user))
+      
+      return response
     } catch (error) {
+      console.error('登录失败:', error)
       throw error
     }
   }
 
-  // 登出
-  function logout() {
+  const logout = () => {
+    // 清除用户信息
     token.value = ''
     userInfo.value = null
     isLoggedIn.value = false
-    removeToken()
-  }
-
-  // 获取用户信息
-  async function getUserInfo() {
-    // 待实现
-  }
-
-  async function updateProfile(data) {
-    try {
-      const res = await updateUserInfo(data)
-      userInfo.value = { ...userInfo.value, ...res }
-      return res
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async function sendVerificationEmail() {
-    try {
-      await resendVerificationEmail()
-    } catch (error) {
-      throw error
-    }
+    
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('userInfo')
   }
 
   return {
@@ -59,9 +44,6 @@ export const useUserStore = defineStore('user', () => {
     userInfo,
     isLoggedIn,
     login,
-    logout,
-    getUserInfo,
-    updateProfile,
-    sendVerificationEmail
+    logout
   }
 }) 

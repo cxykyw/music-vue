@@ -20,13 +20,47 @@ const routes = [
       },
       {
         path: 'explore',
-        name: 'Explore',
-        component: () => import('../views/Explore.vue')
+        component: () => import('../views/Explore.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('../views/explore/NewReleases.vue')
+          },
+          {
+            path: 'charts',
+            component: () => import('../views/explore/Charts.vue')
+          },
+          {
+            path: 'genres',
+            component: () => import('../views/explore/Genres.vue')
+          }
+        ]
       },
       {
         path: 'library',
-        name: 'Library',
-        component: () => import('../views/Library.vue')
+        component: () => import('../views/Library.vue'),
+        children: [
+          {
+            path: '',
+            redirect: '/library/songs'
+          },
+          {
+            path: 'songs',
+            component: () => import('../views/library/Songs.vue')
+          },
+          {
+            path: 'playlists',
+            component: () => import('../views/library/Playlists.vue')
+          },
+          {
+            path: 'albums',
+            component: () => import('../views/library/Albums.vue')
+          },
+          {
+            path: 'favorites',
+            component: () => import('../views/library/Favorites.vue')
+          }
+        ]
       },
       {
         path: 'profile',
